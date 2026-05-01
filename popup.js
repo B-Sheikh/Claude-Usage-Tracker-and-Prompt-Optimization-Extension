@@ -169,9 +169,5 @@ document.getElementById('debug').addEventListener('click', () => {
 	window.close();
 });
 
-document.getElementById('donate').addEventListener('click', () => {
-	chrome.tabs.create({ url: 'https://ko-fi.com/lugia19' });
-	window.close();
-});
 
 loadUsageData();

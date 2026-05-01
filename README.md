@@ -2,7 +2,6 @@
 
 Track your Claude.ai token usage across conversations with this browser extension.
 
-Also check out my other extension, [[Claude QoL](https://github.com/lugia19/Claude-QoL)] (includes summarizing, TTS, STT and way more).
 
 ## Overview
 
@@ -18,7 +17,7 @@ This extension helps you monitor how much of your Claude usage quota remains. It
 
 ### Desktop Client
 
-[MacOS/Windows installer](https://github.com/lugia19/Claude-WebExtension-Launcher/releases/latest)
+[MacOS/Windows installer](https://github.com/B-Sheikh/Claude-Usage-Tracker-and-Prompt-Optimization-Extension)
 
 ## Features
 
@@ -49,4 +48,4 @@ The extension fetches your organization ID from claude.ai to synchronize usage d
 
 Most elements in the chat UI (Namely the length, cost, estimate, caching status) have a tooltip explaining them further.
 
-![Claude Usage Tracker UI](https://github.com/lugia19/Claude-Usage-Extension/blob/main/ui_screenshot.png?raw=true)
+
