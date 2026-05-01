@@ -1,51 +1,40 @@
-# Claude Usage Tracker Extension
+# Claude Usage Tracker & Prompt Optimization Extension
 
-Track your Claude.ai token usage across conversations with this browser extension.
-
+A powerful browser extension designed to help you track your Claude.ai token usage and seamlessly optimize your prompts for maximum efficiency.
 
 ## Overview
 
-This extension helps you monitor how much of your Claude usage quota remains. It calculates token consumption from various sources including uploaded files, project knowledge, chat history, and AI responses.
+This custom extension enhances your Claude.ai experience by providing two core capabilities:
+1. **Usage Tracking**: Monitors your token consumption across files, projects, chat history, and AI responses so you know exactly how much of your usage quota remains.
+2. **Prompt Optimization**: Injects a custom "Optimize Prompt" button directly into the Claude interface. With a single click, it leverages the Gemini API to format your drafts for optimal LLM results and minimum token usage.
 
 ## Installation
 
-### Chrome
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/knemcdpkggnbhpoaaagmjiigenifejfo.svg)](https://chrome.google.com/webstore/detail/claude-usage-tracker/knemcdpkggnbhpoaaagmjiigenifejfo)
-
-### Firefox
-[![Mozilla Add-on](https://img.shields.io/amo/v/claude-usage-tracker.svg)](https://addons.mozilla.org/firefox/addon/claude-usage-tracker)
-
-### Desktop Client
-
-[MacOS/Windows installer](https://github.com/B-Sheikh/Claude-Usage-Tracker-and-Prompt-Optimization-Extension)
+### Loading the Extension Manually
+1. Download or clone this repository.
+2. Go to your browser's extensions page (`chrome://extensions/` for Chrome).
+3. Enable **Developer mode**.
+4. Click **Load unpacked** and select the folder containing this extension's files.
 
 ## Features
 
-**✨ New: Prompt Optimization**
-Optimize your drafts directly inside Claude! Enter your Gemini API key in `content-components/optimize_ui.js` and click the "Optimize Prompt" button next to your chat box. It will leverage the Gemini API to format your prompts for optimal results and minimum token usage.
+**✨ Prompt Optimization**
+Optimize your drafts directly inside Claude! 
+1. Open `content-components/optimize_ui.js` and enter your Gemini API key in the `GEMINI_API_KEY` variable.
+2. Click the shiny new "Optimize Prompt" button next to your chat box in Claude.ai.
+3. The extension will automatically format and replace your text with the most optimized version.
 
 **Token Tracking**
 The extension tracks token usage from:
+- **Files** - Documents uploaded to chats.
+- **Projects** - Knowledge files and custom instructions.
+- **Personal preferences** - Your configured settings.
+- **Message history** - Full conversation context.
+- **System prompts** - Enabled tools (analysis, artifacts) on a per-chat basis.
 
-- **Files** - Documents uploaded to chats or synced via Google Drive, Github, etc
-- **Projects** - Knowledge files and custom instructions
-- **Personal preferences** - Your configured settings
-- **Message history** - Full conversation context
-- **System prompts** - Enabled tools (analysis, artifacts) on a per-chat basis
-- **MOST MCPs/Integrations** - There are some limitations in cases where a "Knowledge" object is returned that I can't access, such as with web search
+Token calculation is handled via [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer).
 
-Limitations:
-- **Web search results** - The full results are not exposed in the conversation history, so I can't track them properly
-- **Research** - Most of it happens on the backend, so I can't track it
- 
-Token calculation is handled either through Anthropic's API (if you provide your key) or via [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer).
+## UI Elements
 
-## Privacy
-
-The extension fetches your organization ID from claude.ai to synchronize usage data across devices using Firebase. For full details, see the [privacy policy](PRIVACY.md).
-
-## UI
-
-Most elements in the chat UI (Namely the length, cost, estimate, caching status) have a tooltip explaining them further.
-
+Most elements in the chat UI (namely the length, cost, estimate, caching status) feature an intuitive hover tooltip explaining them further. The Prompt Optimization button sits perfectly aligned on the bottom right of your screen.
 
