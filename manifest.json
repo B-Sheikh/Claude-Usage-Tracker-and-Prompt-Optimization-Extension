@@ -1,0 +1,79 @@
+{
+	"manifest_version": 3,
+	"name": "Claude Usage Tracker",
+	"version": "5.2.3",
+	"description": "Helps you track your claude.ai usage caps based on tokens sent.",
+	"author": "lugia19",
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "claude_usage_tracker@lugia19.com"
+		}
+	},
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"https://claude.ai/*"
+			],
+			"js": [
+				"lib/browser-polyfill.min.js",
+				"lib/o200k_base.js",
+				"content-components/content_utils.js",
+				"content-components/electron_reciever.js",
+				"content-components/ui_dataclasses.js",
+				"content-components/notification_card.js",
+				"content-components/usage_ui.js",
+				"content-components/length_ui.js",
+				"content-components/optimize_ui.js"
+			]
+		}
+	],
+	"permissions": [
+		"storage",
+		"alarms",
+		"webRequest",
+		"tabs",
+		"contextMenus",
+		"notifications"
+	],
+	"host_permissions": [
+		"*://claude.ai/*",
+		"https://raw.githubusercontent.com/*",
+		"https://github.com/*",
+		"https://api.anthropic.com/*",
+		"https://generativelanguage.googleapis.com/*"
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"default-config.json",
+				"lib/browser-polyfill.min.js",
+				"lib/o200k_base.js",
+				"kofi-button.png",
+				"debug.html",
+				"update_patchnotes.txt",
+				"tracker-styles.css",
+				"injections/rate-limit-watcher.js",
+				"injections/webrequest-polyfill.js",
+				"qol-badge.png",
+				"rate-badge.png"
+			],
+			"matches": [
+				"<all_urls>"
+			]
+		}
+	],
+	"icons": {
+		"512": "icon512.png",
+		"128": "icon128.png"
+	},
+	"action": {
+		"default_icon": "icon128.png",
+		"default_title": "Claude Usage Tracker",
+		"default_popup": "popup.html"
+	},
+	"incognito": "split"
+}

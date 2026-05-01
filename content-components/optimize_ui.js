@@ -133,14 +133,14 @@ class OptimizeUI {
 
 	replaceTextInProseMirror(chatInput, newText) {
 		chatInput.focus();
-		
+
 		// Select all text to replace it
 		const range = document.createRange();
 		range.selectNodeContents(chatInput);
 		const sel = window.getSelection();
 		sel.removeAllRanges();
 		sel.addRange(range);
-		
+
 		// Dispatch a paste event, which ProseMirror natively intercepts and handles perfectly
 		const dataTransfer = new DataTransfer();
 		dataTransfer.setData('text/plain', newText);
