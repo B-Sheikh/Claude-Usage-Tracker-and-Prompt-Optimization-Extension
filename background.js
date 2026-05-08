@@ -6,6 +6,23 @@ import { ClaudeAPI, ConversationAPI } from './bg-components/claude-api.js';
 import { UsageData } from './shared/dataclasses.js';
 import { scheduleAlarm, getAlarm, createNotification } from './bg-components/electron-compat.js';
 
+class UsageHistoryManager {
+	async recordUsage(tokens) {
+		const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+		const history = await getStorageValue('usageHistory', {});
+		history[date] = (history[date] || 0) + tokens;
+		
+		// Keep only last 30 days
+		const dates = Object.keys(history).sort();
+		if (dates.length > 30) {
+			delete history[dates[0]];
+		}
+		
+		await setStorageValue('usageHistory', history);
+	}
+}
+const usageHistoryManager = new UsageHistoryManager();
+
 const INTERCEPT_PATTERNS = {
 	onBeforeRequest: {
 		urls: [
@@ -560,11 +577,11 @@ async function processResponse(orgId, conversationId, responseKey, details) {
 		const previousUsage = UsageData.fromJSON(pendingRequest.previousUsage);
 		await logUsageDelta(orgId, previousUsage, usageData, conversationData.length, model);
 
-		// Add message cost to total tracked
-		await tokenStorageManager.addToTotalTokens(conversationData.cost);
-
 		// Debug: log per-message cost keyed by limit reset timestamps
 		await debugLogMessageCost(usageData, conversationData);
+
+		// Record for dashboard
+		await usageHistoryManager.recordUsage(conversationData.cost);
 	}
 
 	// Schedule notifications for any maxed limits

@@ -187,7 +187,7 @@ class UsageUI {
 		this.state = {
 			usageData: null,
 			currentModel: null,
-			refreshedExpiredLimits: new Set(), // track which expired limits we've already requested a refresh for
+			refreshedExpiredLimits: new Set(),
 		};
 
 		// Element references
@@ -250,6 +250,7 @@ class UsageUI {
 		}
 
 		this.startUpdateLoop();
+		this.initThemeListener();
 	}
 
 	// ========== CREATE (pure DOM construction) ==========
@@ -572,6 +573,19 @@ class UsageUI {
 				qolFooter.remove();
 			}
 		}
+	}
+
+	initThemeListener() {
+		const updateTheme = () => {
+			const isDark = document.documentElement.classList.contains('dark') || 
+						  getComputedStyle(document.body).backgroundColor === 'rgb(30, 30, 30)';
+			document.body.style.setProperty('--ut-bg', isDark ? '#1e1e1e' : '#ffffff');
+			document.body.style.setProperty('--ut-text', isDark ? '#d4d4d4' : '#1a1a1a');
+		};
+
+		const observer = new MutationObserver(updateTheme);
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+		updateTheme();
 	}
 
 	// ========== UPDATE LOOP ==========

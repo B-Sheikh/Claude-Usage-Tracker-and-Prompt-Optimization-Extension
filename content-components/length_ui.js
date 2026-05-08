@@ -97,8 +97,26 @@ class LengthUI {
 		const length = document.createElement('span');
 		const cost = document.createElement('span');
 		const cached = document.createElement('span');
+		
+		const contextBarContainer = document.createElement('div');
+		contextBarContainer.className = 'ut-context-bar-container';
+		contextBarContainer.style.width = '100px';
+		contextBarContainer.style.height = '4px';
+		contextBarContainer.style.background = '#333';
+		contextBarContainer.style.borderRadius = '2px';
+		contextBarContainer.style.overflow = 'hidden';
+		contextBarContainer.style.display = 'inline-block';
+		contextBarContainer.style.marginLeft = '8px';
+		contextBarContainer.style.verticalAlign = 'middle';
+		
+		const contextBar = document.createElement('div');
+		contextBar.className = 'ut-context-bar';
+		contextBar.style.height = '100%';
+		contextBar.style.width = '0%';
+		contextBar.style.background = BLUE_HIGHLIGHT;
+		contextBarContainer.appendChild(contextBar);
 
-		return { container, length, cost, cached };
+		return { container, length, cost, cached, contextBar, contextBarContainer };
 	}
 
 	createStatLineElements() {
@@ -127,6 +145,7 @@ class LengthUI {
 			cost: create('Estimated cost of sending another message\nIncludes ephemeral items like thinking.\nCost = length*model mult / caching factor'),
 			cached: create('Follow up messages in this conversation will have a reduced cost'),
 			estimate: create('Number of messages left based on the current cost'),
+			context: create('Context window usage (how much the model "remembers"). Max 200k tokens.'),
 		};
 	}
 
@@ -135,6 +154,7 @@ class LengthUI {
 		setupTooltip(this.elements.titleArea.cost, this.elements.tooltips.cost);
 		setupTooltip(this.elements.titleArea.cached, this.elements.tooltips.cached);
 		setupTooltip(this.elements.statLine.estimate, this.elements.tooltips.estimate);
+		setupTooltip(this.elements.titleArea.contextBarContainer, this.elements.tooltips.context);
 	}
 
 	// ========== MOUNT (attach to page) ==========
@@ -223,11 +243,21 @@ class LengthUI {
 			const baseFutureCost = conversationData.isCurrentlyCached(currentModelVersion) ? conversationData.futureCost : conversationData.uncachedFutureCost;
 			const interpolatedFutureCost = baseFutureCost +
 				CONFIG.EXTRA_USAGE_CACHING_MULTIPLIER * (conversationData.uncachedFutureCost - baseFutureCost);
-			const dollars = Math.round(interpolatedFutureCost * weight) / 1_000_000;
-			cost.innerHTML = `Cost: <span style="color: ${costColor}">$${dollars.toFixed(2)}</span>`;
+			const costPerMessageDollars = Math.round(interpolatedFutureCost * weight) / 1_000_000;
+			cost.innerHTML = `Cost: <span style="color: ${costColor}">$${costPerMessageDollars.toFixed(2)}</span>`;
 		} else {
-			cost.innerHTML = `Cost: <span style="color: ${costColor}">${weightedCost.toLocaleString()}</span> credits`;
+			const weight = CONFIG.MODEL_WEIGHTS[currentModel] || CONFIG.MODEL_WEIGHTS[CONFIG.DEFAULT_MODEL];
+			const baseFutureCost = conversationData.isCurrentlyCached(currentModelVersion) ? conversationData.futureCost : conversationData.uncachedFutureCost;
+			const dollars = (baseFutureCost * weight) / 1_000_000;
+			cost.innerHTML = `Cost: <span style="color: ${costColor}">${weightedCost.toLocaleString()}</span> credits <span style="color: #888; font-size: 0.8em;">($${dollars.toFixed(2)})</span>`;
 		}
+
+		// Context Bar Update
+		const contextLimit = 200000; // Standard Claude 3 context
+		const contextPct = (conversationData.length / contextLimit) * 100;
+		this.elements.titleArea.contextBar.style.width = `${Math.min(contextPct, 100)}%`;
+		this.elements.titleArea.contextBar.style.background = contextPct > 80 ? RED_WARNING : BLUE_HIGHLIGHT;
+		this.elements.tooltips.context.textContent = `Context: ${conversationData.length.toLocaleString()} / ${contextLimit.toLocaleString()} tokens (${contextPct.toFixed(1)}%)`;
 
 		// Cached
 		if (conversationData.isCurrentlyCached(currentModelVersion)) {
@@ -243,14 +273,14 @@ class LengthUI {
 	}
 
 	renderTitleContainer() {
-		const { length, cost, cached, container } = this.elements.titleArea;
+		const { length, cost, cached, container, contextBarContainer } = this.elements.titleArea;
 		container.innerHTML = '';
 
 		let elements;
 		if (isMobileView()) {
-			elements = [length, cached].filter(el => el.innerHTML);
+			elements = [length, cached, contextBarContainer].filter(el => el.innerHTML || el.classList.contains('ut-context-bar-container'));
 		} else {
-			elements = [length, cost, cached].filter(el => el.innerHTML);
+			elements = [length, cost, cached, contextBarContainer].filter(el => el.innerHTML || el.classList.contains('ut-context-bar-container'));
 		}
 
 		const separator = ' | ';

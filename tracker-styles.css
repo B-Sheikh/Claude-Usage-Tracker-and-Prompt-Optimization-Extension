@@ -252,3 +252,81 @@
     text-align: left;
     /*padding: 0 0.5rem 0.5rem 0.5rem;*/
 }
+
+/* Focus Mode */
+body.ut-focus-mode aside,
+body.ut-focus-mode header:not(.ut-ignore-focus),
+body.ut-focus-mode .dframe-sidebar,
+body.ut-focus-mode [data-testid="sidebar"],
+body.ut-focus-mode nav.flex {
+    display: none !important;
+}
+
+body.ut-focus-mode main,
+body.ut-focus-mode .flex-1.flex.flex-col.min-w-0,
+body.ut-focus-mode [class*="chat-container"] {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+body.ut-focus-mode .max-w-3xl,
+body.ut-focus-mode .max-w-4xl {
+    max-width: 90% !important; /* Make chat area wider in focus mode */
+}
+
+/* Template UI */
+.ut-template-menu {
+    position: fixed;
+    background: #1e1e1e;
+    border: 1px solid #454545;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 100000;
+    min-width: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+    color: #d4d4d4;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ut-template-item {
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ut-template-item:hover {
+    background: #3e3e3e;
+    color: #ffffff;
+}
+
+.ut-template-delete {
+    opacity: 0.5;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.ut-template-delete:hover {
+    background: #de2929;
+    color: white;
+    opacity: 1;
+}
+
+.ut-template-add {
+    padding: 8px 12px;
+    border-top: 1px solid #454545;
+    margin-top: 4px;
+    text-align: center;
+    color: #2c84db;
+    cursor: pointer;
+}
+
+.ut-template-add:hover {
+    text-decoration: underline;
+}

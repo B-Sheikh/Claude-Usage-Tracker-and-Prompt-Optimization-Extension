@@ -2,39 +2,31 @@
 
 A powerful browser extension designed to help you track your Claude.ai token usage and seamlessly optimize your prompts for maximum efficiency.
 
-## Overview
+## Features
 
-This custom extension enhances your Claude.ai experience by providing two core capabilities:
-1. **Usage Tracking**: Monitors your token consumption across files, projects, chat history, and AI responses so you know exactly how much of your usage quota remains.
-2. **Prompt Optimization**: Injects a custom "Optimize Prompt" button directly into the Claude interface. With a single click, it leverages the Gemini API to format your drafts for optimal LLM results and minimum token usage.
+**✨ Prompt Optimization & Tools**
+Optimize your drafts and manage your workflow directly inside Claude!
+- **Optimize**: Click the "Optimize" button to leverage the Gemini API to format your prompts for optimal LLM results and minimum token usage.
+- **Prompt Templates**: Save, manage, and insert frequently used prompt templates with a dedicated template library.
+- **Focus Mode**: Toggle a distraction-free "Zen" mode to hide sidebars and headers, letting you focus entirely on your conversation.
+
+**📊 Analytics & Tracking**
+- **Usage Tracking**: Monitors token consumption across files, projects, chat history, and AI responses.
+- **Analytics Dashboard**: View a detailed 30-day history of your token usage with interactive charts and peak usage statistics.
+- **Context Visualizer**: Real-time progress bar showing how much of Claude's 200k context window you've consumed.
+- **Cost Estimation**: Live USD cost estimation for every message, helping you manage your budget.
+- **Theme Sync**: Automatically synchronizes with Claude's light/dark mode for a seamless visual experience.
 
 ## Installation
 
-### Loading the Extension Manually
 1. Download or clone this repository.
 2. Go to your browser's extensions page (`chrome://extensions/` for Chrome).
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the folder containing this extension's files.
+5. **Set up Optimization**: Open `content-components/optimize_ui.js` and enter your Gemini API key in the `GEMINI_API_KEY` variable.
 
-## Features
+## Technical Details
 
-**✨ Prompt Optimization**
-Optimize your drafts directly inside Claude! 
-1. Open `content-components/optimize_ui.js` and enter your Gemini API key in the `GEMINI_API_KEY` variable.
-2. Click the shiny new "Optimize Prompt" button next to your chat box in Claude.ai.
-3. The extension will automatically format and replace your text with the most optimized version.
-
-**Token Tracking**
-The extension tracks token usage from:
-- **Files** - Documents uploaded to chats.
-- **Projects** - Knowledge files and custom instructions.
-- **Personal preferences** - Your configured settings.
-- **Message history** - Full conversation context.
-- **System prompts** - Enabled tools (analysis, artifacts) on a per-chat basis.
-
-Token calculation is handled via [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer).
-
-## UI Elements
-
-Most elements in the chat UI (namely the length, cost, estimate, caching status) feature an intuitive hover tooltip explaining them further. The Prompt Optimization button sits perfectly aligned on the bottom right of your screen.
-
+- **Token Counting**: Handled via [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer) (o200k_base).
+- **Storage**: Uses `chrome.storage.local` for persistence of templates, usage history, and settings.
+- **UI**: Injected directly into the Claude.ai DOM using a custom Layout Manager for stability.
