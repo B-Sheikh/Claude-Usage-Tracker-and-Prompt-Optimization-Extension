@@ -1,7 +1,7 @@
 /* global browser, Log, BLUE_HIGHLIGHT, SUCCESS_GREEN, RED_WARNING */
 'use strict';
 
-const GEMINI_API_KEY = 'AIzaSyAtL057XrXj8hRd4zYcl9iYUEh4ykBsXjY'; // <-- Enter your API key here
+const GEMINI_API_KEY = '<GEMINI_API_KEY>'; // <-- Enter your API key here
 
 class OptimizeUI {
 	constructor() {
