@@ -30,3 +30,6 @@ Optimize your drafts and manage your workflow directly inside Claude!
 - **Token Counting**: Handled via [gpt-tokenizer](https://github.com/niieani/gpt-tokenizer) (o200k_base).
 - **Storage**: Uses `chrome.storage.local` for persistence of templates, usage history, and settings.
 - **UI**: Injected directly into the Claude.ai DOM using a custom Layout Manager for stability.
+
+
+And one last thing, the api key I added in the `content-components/optimize_ui.js`, is just some dummy one I added to attract users for fun, hope you had a nice laugh on how bad I was to include my api key in the code, the joke is just on you the whole time.
