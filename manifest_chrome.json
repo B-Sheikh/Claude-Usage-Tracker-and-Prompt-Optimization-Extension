@@ -27,7 +27,8 @@
 				"content-components/notification_card.js",
 				"content-components/usage_ui.js",
 				"content-components/length_ui.js",
-				"content-components/optimize_ui.js"
+				"content-components/optimize_ui.js",
+				"content-components/prompt_pointers_ui.js"
 			]
 		}
 	],

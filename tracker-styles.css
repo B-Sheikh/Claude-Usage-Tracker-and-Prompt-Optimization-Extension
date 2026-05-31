@@ -330,3 +330,95 @@ body.ut-focus-mode .max-w-4xl {
 .ut-template-add:hover {
     text-decoration: underline;
 }
+
+/* Prompt Navigation Pointers styles */
+.ut-prompt-navigation {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(30, 30, 30, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 12px 8px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.ut-prompt-navigation::-webkit-scrollbar {
+    display: none;
+}
+
+/* Let's adjust navigation position if sidebar covers right side, but usually right is open */
+.ut-prompt-nav-dot {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    user-select: none;
+}
+
+.ut-prompt-nav-dot:hover {
+    background: #2c84db;
+    color: #ffffff;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(44, 132, 219, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ut-prompt-nav-dot.active {
+    background: #2c84db;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 12px rgba(44, 132, 219, 0.6);
+    transform: scale(1.1);
+}
+
+/* Prompt Token Badge inside message bubble */
+.ut-prompt-token-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 12px;
+    background: rgba(44, 132, 219, 0.15);
+    border: 1px solid rgba(44, 132, 219, 0.3);
+    color: #2c84db;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: auto;
+    user-select: none;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.ut-prompt-token-badge:hover {
+    background: rgba(44, 132, 219, 0.25);
+    border-color: #2c84db;
+    transform: translateY(-1px);
+}

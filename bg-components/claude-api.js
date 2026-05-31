@@ -573,6 +573,7 @@ class ConversationAPI {
 		// Steps 7-8: Process messages and count tokens
 		const humanMessageData = [];
 		const assistantMessageData = [];
+		const computedMessages = [];
 		let hasWebSearchResult = false;
 
 		for (let i = 0; i < currentTrunk.length; i++) {
@@ -604,6 +605,16 @@ class ConversationAPI {
 
 			if (message.sender === "human") {
 				humanMessageData.push({ content: textContent, isCached: message.isCached });
+				
+				// Calculate prompt token usage
+				const textTokens = await tokenCounter.countText(textContent);
+				const msgTokens = textTokens + fileTokens + syncTokens;
+				computedMessages.push({
+					uuid: message.uuid,
+					sender: "human",
+					text: textContent,
+					tokenCount: msgTokens
+				});
 			} else {
 				assistantMessageData.push({ content: textContent, isCached: message.isCached });
 			}
@@ -691,6 +702,7 @@ class ConversationAPI {
 		// Step 12: Return result
 		return new ConversationData({
 			conversationId: this.conversationId,
+			messages: computedMessages,
 			length: Math.round(lengthTokens),
 			cost: Math.round(costTokens),
 			uncachedCost: Math.round(uncachedCostTokens),
