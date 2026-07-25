@@ -1,7 +1,7 @@
 /* global browser, Log, BLUE_HIGHLIGHT, SUCCESS_GREEN, RED_WARNING */
 'use strict';
 
-const GEMINI_API_KEY = 'AIzaMyCg3t9xTgxwi0x9ppFaRDoQQwJ-xZ173aE'; // <-- Enter your API key here
+const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // <-- Enter your API key here
 
 class OptimizeUI {
 	constructor() {
@@ -142,7 +142,9 @@ class OptimizeUI {
 		this.button.style.opacity = '0.7';
 
 		try {
-			const optimizedText = await this.callGeminiAPI(originalText);
+			const optimizedText = await this.callGeminiAPI(originalText, (model) => {
+				this.button.textContent = `⏳ Shifting to ${model}...`;
+			});
 			if (optimizedText) {
 				this.replaceTextInProseMirror(chatInput, optimizedText);
 			}
@@ -156,32 +158,77 @@ class OptimizeUI {
 		}
 	}
 
-	async callGeminiAPI(prompt) {
+	async callGeminiAPI(prompt, onModelShift = null) {
 		const systemInstruction = "Optimize the following prompt for best results and minimum token usage with an LLM. Return ONLY the optimized prompt, no extra text. And dont ask any back questions";
-		const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+		const models = [
+			'gemini-2.5-flash-lite',
+			'gemini-2.5-flash',
+			'gemini-2.0-flash',
+			'gemini-1.5-flash',
+			'gemini-1.5-pro'
+		];
 
-		const response = await fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				contents: [{
-					parts: [{ text: prompt }]
-				}],
-				systemInstruction: {
-					parts: [{ text: systemInstruction }]
+		let lastError = null;
+
+		for (let i = 0; i < models.length; i++) {
+			const model = models[i];
+			if (i > 0 && typeof onModelShift === 'function') {
+				onModelShift(model);
+			}
+
+			try {
+				const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
+				const response = await fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						contents: [{
+							parts: [{ text: prompt }]
+						}],
+						systemInstruction: {
+							parts: [{ text: systemInstruction }]
+						}
+					})
+				});
+
+				if (!response.ok) {
+					let errorMsg = 'API Request Failed';
+					try {
+						const errorJson = await response.json();
+						errorMsg = errorJson.error?.message || errorMsg;
+						if (errorJson.error?.status === 'PERMISSION_DENIED' || errorMsg.toLowerCase().includes('api key')) {
+							throw new Error(errorMsg);
+						}
+					} catch (parseErr) {
+						if (parseErr.message && parseErr.message !== 'API Request Failed') {
+							throw parseErr;
+						}
+					}
+					throw new Error(`${model} failed: ${errorMsg}`);
 				}
-			})
-		});
 
-		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.error?.message || 'API Request Failed');
+				const data = await response.json();
+				const optimizedText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
+				if (optimizedText !== null) {
+					if (i > 0) {
+						console.info(`[OptimizeUI] Successfully optimized using fallback model: ${model}`);
+					}
+					return optimizedText;
+				}
+				throw new Error(`${model} returned empty response`);
+			} catch (err) {
+				lastError = err;
+				if (err.message && (err.message.includes('API key') || err.message.includes('PERMISSION_DENIED'))) {
+					throw err;
+				}
+				console.warn(`[OptimizeUI] Model ${model} not working (${err.message}), quickly shifting to next model...`);
+			}
 		}
 
-		const data = await response.json();
-		return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
+		throw new Error(lastError ? lastError.message : 'All Gemini fallback models failed.');
 	}
 
 	replaceTextInProseMirror(chatInput, newText) {
